@@ -1,7 +1,5 @@
 from django.urls import path, include
 
-from book.apps import BookConfig
-
 app_name = 'book_api'
 
 urlpatterns = [
