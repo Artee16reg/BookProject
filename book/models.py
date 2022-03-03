@@ -10,14 +10,13 @@ class Chapter(models.Model):
 class Author(models.Model):
     """Афторы"""
     name = models.CharField("Имя", max_length=100)
-    image = models.ImageField("Изображение", upload_to="actors/")
 
     def __str__(self):
         return self.name
 
     class Meta:
-        verbose_name = "Афтор"
-        verbose_name_plural = "Афторы"
+        verbose_name = "Автор"
+        verbose_name_plural = "Авторы"
 
 
 class Genre(models.Model):
@@ -41,6 +40,7 @@ class BookModel(models.Model):
     year = models.PositiveSmallIntegerField("Дата выхода", default=2019)
     author = models.ManyToManyField(Author, verbose_name="актеры", related_name="film_actor")
     genres = models.ManyToManyField(Genre, verbose_name="жанры")
+    image = models.ImageField("Изображение", upload_to="book_img/")
 
     def __str__(self):
         return self.title
@@ -63,10 +63,10 @@ class Rating(models.Model):
     """Рейтинг"""
     ip = models.CharField("IP адрес", max_length=15)
     star = models.ForeignKey(RatingStar, on_delete=models.CASCADE, verbose_name="звезда")
-    movie = models.ForeignKey(BookModel, on_delete=models.CASCADE, verbose_name="книга")
+    book = models.ForeignKey(BookModel, on_delete=models.CASCADE, verbose_name="книга")
 
     def __str__(self):
-        return f"{self.star} - {self.movie}"
+        return f"{self.star} - {self.book}"
 
     class Meta:
         verbose_name = "Рейтинг"
