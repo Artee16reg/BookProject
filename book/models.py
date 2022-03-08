@@ -31,7 +31,7 @@ class BookModel(models.Model):
     title = models.CharField("Название", max_length=250)
     description = models.TextField("Описание")
     year = models.PositiveSmallIntegerField("Дата выхода", default=2019)
-    author = models.ManyToManyField(Author, verbose_name="актеры")
+    author = models.ManyToManyField(Author, verbose_name="авторы")
     genre = models.ForeignKey(Genre, verbose_name="жанры", on_delete=models.CASCADE)
     image = models.ImageField("Изображение", upload_to="book_img/")
 
@@ -97,9 +97,9 @@ class Comment(models.Model):
     name = models.CharField("Имя", max_length=100)
     text = models.TextField("Сообщение", max_length=5000)
     parent = models.ForeignKey(
-        'self', verbose_name="Родитель", on_delete=models.SET_NULL, blank=True, null=True
+        'self', verbose_name="Родитель", on_delete=models.SET_NULL, blank=True, null=True, related_name='children'
     )
-    book = models.ForeignKey(BookModel, verbose_name="книга", on_delete=models.CASCADE)
+    book = models.ForeignKey(BookModel, verbose_name="книга", on_delete=models.CASCADE, related_name='comments')
 
     def __str__(self):
         return f"{self.name} - {self.book}"
