@@ -11,20 +11,21 @@ class BookListView(APIView):
     """Список книг"""
 
     def get(self, request):
-        books = BookModel.objects.all().annotate(
-            rating_user=models.Count('ratings', filter=models.Q(ratings__ip=get_client_ip(request)))).annotate(
-            middle_star=models.Sum(models.F('ratings__star')) / models.Count(models.F('ratings'))
-        )
-        serializer = BookListSerializers(instance=books, many=True)
+        book = BookModel.objects.all()
+        serializer = BookListSerializers(instance=book, many=True)
         return Response(serializer.data)
+
 
 
 class BookDetailView(APIView):
     """Вывод книги"""
 
     def get(self, request, pk):
-        book = BookModel.objects.get(id=pk)
-        serializer = BookDetailSerializers(instance=book)
+        books = BookModel.objects.filter(id=pk).annotate(
+            rating_user=models.Count('ratings', filter=models.Q(ratings__ip=get_client_ip(request)))).annotate(
+            middle_star=models.Sum(models.F('ratings__star')) / models.Count(models.F('ratings'))
+        )
+        serializer = BookDetailSerializers(instance=books, many=True)
         return Response(serializer.data)
 
 

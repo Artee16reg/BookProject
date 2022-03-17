@@ -3,19 +3,6 @@ from rest_framework import serializers
 from book.models import BookModel, Comment, Rating
 
 
-class BookListSerializers(serializers.ModelSerializer):
-    """Список книг"""
-    genre = serializers.SlugRelatedField(slug_field='name', read_only=True)
-    rating_user = serializers.BooleanField()
-    # genre = serializers.CharField(source='genre.name', max_length=250)
-    middle_star = serializers.IntegerField()
-
-    class Meta:
-        model = BookModel
-        fields = ('id', 'title', 'description', 'year', 'author', 'genre', 'image', 'rating_user', 'middle_star')
-        depth = 4
-
-
 class FilterReviewListSerializer(serializers.ListSerializer):
     """Фильтр комментариев, только parents"""
 
@@ -50,15 +37,27 @@ class CommentSerializers(serializers.ModelSerializer):
         fields = ('name', 'text', 'children')
 
 
-class BookDetailSerializers(serializers.ModelSerializer):
+class BookListSerializers(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(slug_field='name', read_only=True, many=True)
-    comments = CommentSerializers(many=True)
-    # rating_user = serializers.BooleanField()
-    # middle_star = serializers.IntegerField()
 
     class Meta:
         model = BookModel
-        fields = ('id', 'title', 'description', 'year', 'author', 'genre', 'image', 'comments')
+        fields = ('id', 'title', 'description', 'year', 'author', 'genre', 'image')
+
+
+class BookDetailSerializers(serializers.ModelSerializer):
+    """Список книг"""
+    genre = serializers.SlugRelatedField(slug_field='name', read_only=True)
+    rating_user = serializers.BooleanField()
+    # genre = serializers.CharField(source='genre.name', max_length=250)
+    middle_star = serializers.IntegerField()
+    comments = CommentSerializers(many=True)
+
+    class Meta:
+        model = BookModel
+        fields = ('id', 'title', 'description', 'year', 'author',
+                  'genre', 'image', 'rating_user', 'middle_star', 'comments')
+        depth = 4
 
 
 class CreateRatingSerializer(serializers.ModelSerializer):
