@@ -1,53 +1,47 @@
 from django.db import models
-from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework import generics
 
 from book.models import BookModel
 from .serializers import BookListSerializers, BookDetailSerializers, CommentCreateSerializers, CreateRatingSerializer
 from .service import get_client_ip
 
 
-class BookListView(APIView):
+class BookListView(generics.ListAPIView):
     """Список книг"""
-
-    def get(self, request):
-        book = BookModel.objects.all()
-        serializer = BookListSerializers(instance=book, many=True)
-        return Response(serializer.data)
+    serializer_class = BookListSerializers
+    queryset = BookModel.objects.all()
 
 
-
-class BookDetailView(APIView):
+class BookDetailView(generics.RetrieveAPIView):
     """Вывод книги"""
 
-    def get(self, request, pk):
-        books = BookModel.objects.filter(id=pk).annotate(
-            rating_user=models.Count('ratings', filter=models.Q(ratings__ip=get_client_ip(request)))).annotate(
+    serializer_class = BookDetailSerializers
+
+    def get_queryset(self):  # TO DO
+        book = BookModel.objects.filter().annotate(
+            rating_user=models.Count('ratings', filter=models.Q(ratings__ip=get_client_ip(self.request)))).annotate(
             middle_star=models.Sum(models.F('ratings__star')) / models.Count(models.F('ratings'))
         )
-        serializer = BookDetailSerializers(instance=books, many=True)
-        return Response(serializer.data)
+        return book
 
 
-class CommentCreateView(APIView):
+class CommentCreateView(generics.CreateAPIView):
     """Добавление Комментариев"""
+    serializer_class = CommentCreateSerializers
+    # def post(self, request):
+    #     comment = CommentCreateSerializers(data=request.data)
+    #     if comment.is_valid():
+    #         comment.save()
+    #     else:
+    #         print("хуйня кOкOято ")
+    #     return Response(status=201)
 
-    def post(self, request):
-        comment = CommentCreateSerializers(data=request.data)
-        if comment.is_valid():
-            comment.save()
-        else:
-            print("хуйня кOкOято ")
-        return Response(status=201)
 
-
-class AddStarRatingView(APIView):
+class AddStarRatingView(generics.CreateAPIView):
     """Добавление рейтинга фильму"""
 
-    def post(self, request):
-        serializer = CreateRatingSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(ip=get_client_ip(request))
-            return Response(status=201)
-        else:
-            return Response(status=400)
+    serializer_class = CreateRatingSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(ip=get_client_ip(self.request))
+
