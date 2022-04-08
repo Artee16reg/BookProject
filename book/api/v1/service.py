@@ -1,3 +1,7 @@
+from django_filters import rest_framework as filters
+from book.models import BookModel
+
+
 def get_client_ip(request):
     """Получение IP пользоваеля"""
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -6,3 +10,18 @@ def get_client_ip(request):
     else:
         ip = request.META.get('REMOTE_ADDR')
     return ip
+
+
+class CharFilterInFilter(filters.BaseInFilter, filters.CharFilter):
+    pass
+
+
+class BookFilter(filters.FilterSet):
+    """Филтер по авторам, дате, жанрам"""
+    author = CharFilterInFilter(field_name='author__name', lookup_expr='in')
+    #  genre
+    year = filters.RangeFilter()
+
+    class Meta:
+        model = BookModel
+        fields = ['author', 'year']  # genre

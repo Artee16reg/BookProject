@@ -50,6 +50,7 @@ class BookModel(models.Model):
 
 
 class Chapter(models.Model):
+    """Глава в книге"""
     title = models.CharField("Название", max_length=250)
     number = models.SmallIntegerField("Значение", default=0)
     text = models.TextField("Текст")

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from book.models import BookModel, Comment, Rating
+from book.models import BookModel, Comment, Rating, Chapter
 
 
 class FilterReviewListSerializer(serializers.ListSerializer):
@@ -38,7 +38,9 @@ class CommentSerializers(serializers.ModelSerializer):
 
 
 class BookListSerializers(serializers.ModelSerializer):
+    """Список книг"""
     author = serializers.SlugRelatedField(slug_field='name', read_only=True, many=True)
+    genre = serializers.SlugRelatedField(slug_field='name', read_only=True)
 
     class Meta:
         model = BookModel
@@ -46,10 +48,10 @@ class BookListSerializers(serializers.ModelSerializer):
 
 
 class BookDetailSerializers(serializers.ModelSerializer):
-    """Список книг"""
+    """Подробно про книгу"""
     genre = serializers.SlugRelatedField(slug_field='name', read_only=True)
-    rating_user = serializers.BooleanField()
     # genre = serializers.CharField(source='genre.name', max_length=250)
+    rating_user = serializers.BooleanField()
     middle_star = serializers.IntegerField()
     comments = CommentSerializers(many=True)
 
@@ -58,6 +60,14 @@ class BookDetailSerializers(serializers.ModelSerializer):
         fields = ('id', 'title', 'description', 'year', 'author',
                   'genre', 'image', 'rating_user', 'middle_star', 'comments')
         depth = 4
+
+
+class ReadBookSerializers(serializers.ModelSerializer):
+    """Читать книгу"""
+
+    class Meta:
+        model = Chapter
+        fields = ('title', 'number', 'text')
 
 
 class CreateRatingSerializer(serializers.ModelSerializer):
