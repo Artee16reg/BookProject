@@ -37,6 +37,14 @@ class CommentSerializers(serializers.ModelSerializer):
         fields = ('name', 'text', 'children')
 
 
+class ReadBookSerializers(serializers.ModelSerializer):
+    """Читать книгу"""
+
+    class Meta:
+        model = Chapter
+        fields = ['title', 'number', 'text']
+
+
 class BookListSerializers(serializers.ModelSerializer):
     """Список книг"""
     author = serializers.SlugRelatedField(slug_field='name', read_only=True, many=True)
@@ -60,14 +68,6 @@ class BookDetailSerializers(serializers.ModelSerializer):
         fields = ('id', 'title', 'description', 'year', 'author',
                   'genre', 'image', 'rating_user', 'middle_star', 'comments')
         depth = 4
-
-
-class ReadBookSerializers(serializers.ModelSerializer):
-    """Читать книгу"""
-
-    class Meta:
-        model = Chapter
-        fields = ('title', 'number', 'text')
 
 
 class CreateRatingSerializer(serializers.ModelSerializer):

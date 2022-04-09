@@ -29,7 +29,7 @@ class BookDetailView(generics.RetrieveAPIView):
         return book
 
 
-class ReadingBook(generics.ListAPIView):  # TO DO refactoring
+class ReadingBook(generics.ListAPIView):
     """Чтение книги"""
 
     serializer_class = ReadBookSerializers

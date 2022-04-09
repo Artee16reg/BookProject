@@ -10,7 +10,7 @@ app_name = 'v1'
 # urlpatterns = router.urls
 urlpatterns = [
     path('books/', BookListView.as_view()),
-    path('books/<int:pk>', BookDetailView.as_view()),
+    path('book/<int:pk>', BookDetailView.as_view()),
     path('read/<int:pk>', ReadingBook.as_view()),
     path('comment/', CommentCreateView.as_view()),
     path('rating/', AddStarRatingView.as_view()),
