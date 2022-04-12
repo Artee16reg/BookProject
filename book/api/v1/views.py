@@ -1,5 +1,5 @@
 from django.db import models
-from rest_framework import generics
+from rest_framework import generics, filters
 from django_filters.rest_framework import DjangoFilterBackend
 
 from book.models import BookModel, Chapter
@@ -8,12 +8,13 @@ from .serializers import BookListSerializers, BookDetailSerializers, \
 from .service import get_client_ip, BookFilter
 
 
-class BookListView(generics.ListAPIView):  # TO DO maybe ViewSet?
+class BookListView(generics.ListAPIView):  # TODO may be ViewSet?
     """Список книг"""
     serializer_class = BookListSerializers
     queryset = BookModel.objects.all()
-    filter_backends = (DjangoFilterBackend,)
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     filterset_class = BookFilter
+    search_fields = ['title']
 
 
 class BookDetailView(generics.RetrieveAPIView):
@@ -29,7 +30,7 @@ class BookDetailView(generics.RetrieveAPIView):
         return book
 
 
-class ReadingBook(generics.ListAPIView):
+class ReadingBook(generics.ListAPIView):  # TODO you need add pagination
     """Чтение книги"""
 
     serializer_class = ReadBookSerializers

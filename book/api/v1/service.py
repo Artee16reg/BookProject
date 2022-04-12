@@ -18,10 +18,9 @@ class CharFilterInFilter(filters.BaseInFilter, filters.CharFilter):
 
 class BookFilter(filters.FilterSet):
     """Филтер по авторам, дате, жанрам"""
-    author = CharFilterInFilter(field_name='author__name', lookup_expr='in')
-    #  genre
+    #author = CharFilterInFilter(field_name='author__name', lookup_expr='in')
     year = filters.RangeFilter()
 
     class Meta:
         model = BookModel
-        fields = ['author', 'year']  # genre
+        fields = ['author__name', 'year', 'genre__name']
