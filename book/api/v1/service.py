@@ -12,8 +12,8 @@ def get_client_ip(request):
     return ip
 
 
-class CharFilterInFilter(filters.BaseInFilter, filters.CharFilter):
-    pass
+# class CharFilterInFilter(filters.BaseInFilter, filters.CharFilter):
+#     pass
 
 
 class BookFilter(filters.FilterSet):
