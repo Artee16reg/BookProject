@@ -2,15 +2,14 @@ from django.db import models
 from rest_framework import generics, filters
 from django_filters.rest_framework import DjangoFilterBackend
 
-from book.models import BookModel, Chapter
-from .serializers import BookListSerializers, BookDetailSerializers, \
-    CommentCreateSerializers, CreateRatingSerializer, ReadBookSerializers
+from book.models import BookModel, Chapter, Comment
+from book.api.v1 import serializers
 from .service import get_client_ip, BookFilter
 
 
 class BookListView(generics.ListAPIView):  # TODO may be ViewSet?
     """Список книг"""
-    serializer_class = BookListSerializers
+    serializer_class = serializers.BookListSerializers
     queryset = BookModel.objects.all()
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
     filterset_class = BookFilter
@@ -20,7 +19,7 @@ class BookListView(generics.ListAPIView):  # TODO may be ViewSet?
 class BookDetailView(generics.RetrieveAPIView):
     """Вывод книги"""
 
-    serializer_class = BookDetailSerializers
+    serializer_class = serializers.BookDetailSerializers
 
     def get_queryset(self):
         book = BookModel.objects.filter().annotate(
@@ -33,7 +32,7 @@ class BookDetailView(generics.RetrieveAPIView):
 class ReadingBook(generics.ListAPIView):  # TODO you need add pagination
     """Чтение книги"""
 
-    serializer_class = ReadBookSerializers
+    serializer_class = serializers.ReadBookSerializers
 
     def get_queryset(self):
         id_book = self.kwargs['pk']
@@ -41,9 +40,9 @@ class ReadingBook(generics.ListAPIView):  # TODO you need add pagination
         return read_book
 
 
-class CommentCreateView(generics.CreateAPIView):
+class CommentCreateView(generics.CreateAPIView):  # TODO may be ViewSet?
     """Добавление Комментариев"""
-    serializer_class = CommentCreateSerializers
+    serializer_class = serializers.CommentCreateSerializers
     # def post(self, request):
     #     comment = CommentCreateSerializers(data=request.data)
     #     if comment.is_valid():
@@ -53,10 +52,16 @@ class CommentCreateView(generics.CreateAPIView):
     #     return Response(status=201)
 
 
+class CommentUpdateView(generics.UpdateAPIView):
+    """Обновление Комментариев"""
+    queryset = Comment.objects.all()
+    serializer_class = serializers.CommentSerializers
+
+
 class AddStarRatingView(generics.CreateAPIView):
     """Добавление рейтинга фильму"""
 
-    serializer_class = CreateRatingSerializer
+    serializer_class = serializers.CreateRatingSerializer
 
     def perform_create(self, serializer):
         serializer.save(ip=get_client_ip(self.request))
