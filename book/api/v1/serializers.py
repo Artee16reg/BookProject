@@ -37,8 +37,8 @@ class CommentSerializers(serializers.ModelSerializer):
         fields = ('name', 'text', 'children')
 
 
-class ReadBookSerializers(serializers.ModelSerializer):
-    """Читать книгу"""
+class ChapterBookSerializers(serializers.ModelSerializer):
+    """Главы книги"""
 
     class Meta:
         model = Chapter

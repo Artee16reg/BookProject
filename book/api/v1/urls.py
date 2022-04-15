@@ -11,7 +11,7 @@ app_name = 'v1'
 urlpatterns = [
     path('books/', views.BookListView.as_view()),
     path('book/<int:pk>', views.BookDetailView.as_view()),
-    path('read/<int:pk>', views.ReadingBook.as_view()),
+    path('read/<int:pk>', views.ChapterBookView.as_view()),
     path('comment/', views.CommentCreateView.as_view()),
     path('comment/<int:pk>', views.CommentUpdateView.as_view()),
     path('rating/', views.AddStarRatingView.as_view()),

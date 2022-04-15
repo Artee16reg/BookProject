@@ -29,10 +29,10 @@ class BookDetailView(generics.RetrieveAPIView):
         return book
 
 
-class ReadingBook(generics.ListAPIView):  # TODO you need add pagination
+class ChapterBookView(generics.ListAPIView):  # TODO you need add pagination
     """Чтение книги"""
 
-    serializer_class = serializers.ReadBookSerializers
+    serializer_class = serializers.ChapterBookSerializers
 
     def get_queryset(self):
         id_book = self.kwargs['pk']
